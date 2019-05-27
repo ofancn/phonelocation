@@ -60,8 +60,6 @@ class PhoneLocation
         $total = (self::$_fileSize - self::$offset) / 7;
         $position = $leftPos = 0;
         $rightPos = $total;
-        $position = $leftPos = 0;
-        $rightPos = $total;
         $telPrefix = substr($phone, 0, 7);
         while ($leftPos < $rightPos - 1) {
             $position = $leftPos + intval(($rightPos - $leftPos) / 2);
