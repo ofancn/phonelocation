@@ -8,7 +8,7 @@
 ## 安装
 
 ~~~php
-composer require invoice/invoice
+composer require invoice/phonelocation
 ~~~
 
 ## 使用
