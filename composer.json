@@ -1,0 +1,15 @@
+{
+    "name": "invoice/phonelocation",
+    "description": "手机号码归属地查询",
+    "keywords": [
+        "mobile",
+        "phone",
+        "location",
+        "mobile"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ofan\\": "src"
+        }
+    }
+}
