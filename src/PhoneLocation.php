@@ -48,7 +48,7 @@ class PhoneLocation
      */
     public function find($phone)
     {
-        if (preg_match('/^1[34578]\d{9}$/', $phone)) {
+        if (preg_match('/^1[345789]\d{9}$/', $phone)) {
             $value = $this->_find($phone);
         }
         return $value ?? null;
