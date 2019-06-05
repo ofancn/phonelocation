@@ -10,14 +10,14 @@ namespace Ofan;
  */
 class PhoneLocation
 {
-    protected static $_fileHandle;
+    protected $_fileHandle;
 
-    protected static $_fileSize;
+    protected $_fileSize;
 
-    protected static $version;
-    protected static $offset;
+    protected $version;
+    protected $offset;
 
-    protected static $spList = [
+    protected $spList = [
         1 => '中国移动',
         2 => '中国联通',
         3 => '中国电信'
@@ -26,19 +26,19 @@ class PhoneLocation
     public function __construct($file = null)
     {
         $file = realpath($file ?: __DIR__ . '/../data/mobile.dat');
-        if (!self::$_fileHandle) {
-            self::$_fileHandle = fopen($file, 'r');
+        if (!$this->_fileHandle) {
+            $this->_fileHandle = fopen($file, 'r');
         }
-        if (!self::$_fileSize) {
-            self::$_fileSize = filesize($file);
+        if (!$this->_fileSize) {
+            $this->_fileSize = filesize($file);
         }
-        if (!self::$version) {
-            fseek(self::$_fileHandle, 0);
-            self::$version = unpack('N', fread(self::$_fileHandle, 4))[1];
+        if (!$this->version) {
+            fseek($this->_fileHandle, 0);
+            $this->version = unpack('N', fread($this->_fileHandle, 4))[1];
         }
-        if (!self::$offset) {
-            fseek(self::$_fileHandle, 4);
-            self::$offset = unpack('N', fread(self::$_fileHandle, 4))[1];
+        if (!$this->offset) {
+            fseek($this->_fileHandle, 4);
+            $this->offset = unpack('N', fread($this->_fileHandle, 4))[1];
         }
     }
     /**
@@ -57,29 +57,29 @@ class PhoneLocation
     private function _find($phone)
     {
         //号码总数
-        $total = (self::$_fileSize - self::$offset) / 7;
+        $total = ($this->_fileSize - $this->offset) / 7;
         $position = $leftPos = 0;
         $rightPos = $total;
         $telPrefix = substr($phone, 0, 7);
         while ($leftPos < $rightPos - 1) {
             $position = $leftPos + intval(($rightPos - $leftPos) / 2);
-            $indexPos = ($position * 7) + self::$offset;
-            fseek(self::$_fileHandle, $indexPos);
-            $phone = unpack('N', fread(self::$_fileHandle, 4))[1];
+            $indexPos = ($position * 7) + $this->offset;
+            fseek($this->_fileHandle, $indexPos);
+            $phone = unpack('N', fread($this->_fileHandle, 4))[1];
             if ($phone < $telPrefix) {
                 $leftPos = $position;
             } elseif ($phone > $telPrefix) {
                 $rightPos = $position;
             } else {
                 //查找运营商
-                fseek(self::$_fileHandle, $indexPos + 4);
-                $sp = unpack('C', fread(self::$_fileHandle, 1))[1];
+                fseek($this->_fileHandle, $indexPos + 4);
+                $sp = unpack('C', fread($this->_fileHandle, 1))[1];
                 //查找详情
-                fseek(self::$_fileHandle, $indexPos + 5);
-                $itemPos = unpack('n', fread(self::$_fileHandle, 2))[1];
-                fseek(self::$_fileHandle, $itemPos);
+                fseek($this->_fileHandle, $indexPos + 5);
+                $itemPos = unpack('n', fread($this->_fileHandle, 2))[1];
+                fseek($this->_fileHandle, $itemPos);
                 $item = [];
-                while (($tmp = unpack('N', fread(self::$_fileHandle, 4))[1]) !== 0) {
+                while (($tmp = unpack('N', fread($this->_fileHandle, 4))[1]) !== 0) {
                     $item[] = $tmp;
                 }
 
@@ -94,7 +94,7 @@ class PhoneLocation
 
     private function phoneInfo($item, $type)
     {
-        $type = self::$spList[$type];
+        $type = $this->spList[$type];
         $data = [
             'sp' => $type,
             'province' => $item[1],
@@ -125,6 +125,6 @@ class PhoneLocation
 
     public function __destruct()
     {
-        fclose(self::$_fileHandle);
+        fclose($this->_fileHandle);
     }
 }
